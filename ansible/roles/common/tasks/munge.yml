@@ -1,0 +1,41 @@
+- name: Create munge key
+  ansible.builtin.command: create-munge-key
+  when: inventory_hostname in groups['head']
+  become: true
+  tags: munge
+
+- name: Retrieve munge key
+  ansible.builtin.fetch:
+    src: /etc/munge/munge.key
+    dest: extra/priv/munge.key
+    flat: yes
+  when: inventory_hostname in groups['head']
+  become: true
+  tags: munge
+
+- name: Distribute munge key
+  ansible.builtin.copy:
+    src: extra/priv/munge.key
+    dest: /etc/munge/munge.key
+    owner: munge
+    group: munge
+    mode: 0400
+  when: |
+    (inventory_hostname in groups['dbd']) or
+    (inventory_hostname in groups['compute']) or
+    (inventory_hostname in groups['login'])
+  become: true
+  tags: munge
+
+- name: Enable munge service
+  ansible.builtin.systemd_service:
+    name: munge
+    enabled: true
+    state: started
+  when: |
+    (inventory_hostname in groups['head']) or
+    (inventory_hostname in groups['dbd']) or
+    (inventory_hostname in groups['compute']) or
+    (inventory_hostname in groups['login'])
+  become: true
+  tags: munge

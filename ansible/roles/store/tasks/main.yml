@@ -1,0 +1,16 @@
+- name: Create network storage drive
+  community.general.filesystem:
+    fstype: ext4
+    dev: /dev/vda
+  become: true
+
+- name: Mount network storage drive
+  ansible.posix.mount:
+    path: /opt
+    src: /dev/vda
+    fstype: ext4
+    state: mounted
+  become: true
+
+- name: Create NFS shares
+  import_tasks: nfs.yml

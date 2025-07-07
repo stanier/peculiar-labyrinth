@@ -1,0 +1,17 @@
+- name: Install prerequisites
+  ansible.builtin.package:
+    name:
+      - mariadb-devel
+      - munge-devel
+      - pam-devel
+      - perl
+      - readline-devel
+      - perl-ExtUtils-MakeMaker
+    enablerepo: devel
+  become: true
+- name: Download Slurm tarball
+  ansible.builtin.get_url:
+    url: https://download.schedmd.com/slurm/slurm-24.05.2.tar.bz2
+    dest: /tmp/slurm-24.05.2.tar.bz2
+- name: Build Slurm from tarball
+  ansible.builtin.command: rpmbuild -ta /tmp/slurm-24.05.2.tar.bz2

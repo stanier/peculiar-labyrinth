@@ -1,0 +1,63 @@
+- name: Allow IPv4 forwarding
+  ansible.builtin.copy:
+    content: "net.ipv4.ip_forward=1"
+    dest: /etc/sysctl.d/42-clusterrouter.conf
+    group: root
+    owner: root
+    mode: 0644
+  become: true
+
+- name: Install Firewalld
+  ansible.builtin.package:
+    name: firewalld
+    state: present
+  become: true
+
+- name: Enabled firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    enabled: yes
+    state: started
+  become: true
+
+- name: Define public zone
+  ansible.posix.firewalld:
+    zone: public
+    interface: eth0
+    permanent: true
+    state: enabled
+  become: true
+
+- name: Allow masquerading in public
+  ansible.posix.firewalld:
+    zone: public
+    permanent: true
+    masquerade: true
+    state: enabled
+  become: true
+
+- name: Define internal zone
+  ansible.posix.firewalld:
+    zone: internal
+    interface: eth1
+    permanent: true
+    state: enabled
+  become: true
+
+- name: Create forwarding policy
+  ansible.builtin.command: "{{ item }}"
+  with_items:
+  - firewall-cmd --new-policy internal-external --permanent
+  - firewall-cmd --reload
+  - firewall-cmd --policy internal-external --add-ingress-zone=internal --permanent
+  - firewall-cmd --policy internal-external --add-egress-zone=public --permanent
+  - firewall-cmd --policy internal-external --set-target=ACCEPT --permanent
+  - firewall-cmd --reload
+  become: true
+
+- name: Open SSH port
+  ansible.posix.firewalld:
+    port: 22/tcp
+    permanent: true
+    state: enabled
+  become: true

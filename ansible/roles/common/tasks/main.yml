@@ -1,0 +1,50 @@
+- name: Upgrade all packages
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+  become: true
+
+- name:
+  ansible.builtin.package:
+    name: "epel-release"
+    state: latest
+  become: true
+
+- name: Add Slurm system user
+  ansible.builtin.user:
+    name: slurm
+    system: true
+    state: present
+  become: true
+
+- name: Install slurm
+  ansible.builtin.package:
+    name: "slurm"
+    state: latest
+  become: true
+
+- name: Populate /etc/hosts
+  ansible.builtin.lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{ hostvars[item].ansible_host }} {{item}}"
+    state: present
+  when: hostvars[item].ansible_host is defined
+  with_items: "{{ groups['proxmox_pool_lilsebastian'] }}"
+  become: true
+  tags: hosts
+
+- name: Format slurm configuration
+  ansible.builtin.template:
+    src: extra/templates/slurm.conf.j2
+    dest: /etc/slurm/slurm.conf
+  become: true
+  tags: slurm
+
+- name: Setup munge
+  import_tasks: munge.yml
+  tags: munge
+
+- name: Setup NFS mounts
+  import_tasks: nfs.yml
+  tags: nfs

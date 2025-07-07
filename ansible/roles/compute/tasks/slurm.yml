@@ -1,0 +1,15 @@
+- name: Install slurm compute packages
+  ansible.builtin.package:
+    name:
+      - slurm
+      - slurm-perlapi
+      - slurm-slurmd
+    state: present
+  become: true
+
+- name: Enable slurmd
+  ansible.builtin.systemd_service:
+    name: slurmd
+    enabled: true
+    state: started
+  become: true

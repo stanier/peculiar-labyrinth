@@ -1,0 +1,35 @@
+- name: Create mountpoints
+  ansible.builtin.file:
+    path: "/{{item}}"
+    state: directory
+    mode: '0777'
+    owner: nobody
+  with_items:
+    - "pkgs"
+    - "apps"
+    - "misc"
+  become: true
+
+- name: Configure mounts
+  ansible.builtin.blockinfile:
+    path: /etc/fstab
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item }}"
+    state: present
+    block: "10.42.253.1:/opt/{{item}} /{{item}} nfs defaults 0 0"
+  with_items:
+    - "pkgs"
+    - "apps"
+    - "misc"
+  become: true
+
+#- name: Configure /home mount
+#  ansible.builtin.blockinfile:
+#    path: /etc/fstab
+#    marker: "# {mark} ANSIBLE MANAGED BLOCK /home"
+#    state: present
+#    block: "10.42.253.1:/home /home nfs defaults 0 0"
+#  become: true
+
+- name: Mount network shares
+  ansible.builtin.command: mount -a
+  become: true

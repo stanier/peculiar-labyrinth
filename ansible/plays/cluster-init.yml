@@ -1,0 +1,89 @@
+---
+- name: "Initialize toy cluster"
+  hosts:
+    - localhost
+    - net
+    - store
+    #- build
+    - dbd
+    - head
+    - compute
+    - login
+  gather_facts: false
+  vars_files:
+    - "{{lookup('ansible.builtin.env', 'PWD')}}/vars.yml"
+  tasks:
+
+  - name: Deploy Networking Node
+    ansible.builtin.include_role:
+      name: net
+    when: inventory_hostname in groups['net']
+    tags: net
+
+  - name: Start VMs
+    delegate_to: localhost
+    community.general.proxmox_kvm:
+      vmid: "{{ proxmox_vmid }}"
+      api_host: "{{ proxmox_host }}"
+      api_user: "{{ proxmox_user }}"
+      api_token_id: "{{ proxmox_token_id }}"
+      api_token_secret: "{{ proxmox_token_secret }}"
+      state: started
+      timeout: 600
+    when: |
+      (inventory_hostname in groups['store']) or
+      (inventory_hostname in groups['dbd']) or
+      (inventory_hostname in groups['head']) or
+      (inventory_hostname in groups['compute']) or
+      (inventory_hostname in groups['login'])
+    tags: vm
+  
+  - name: 1min pause for VMs to register on network
+    ansible.builtin.pause:
+      minutes: 1
+    tags: vm
+
+  - name: Deploy Storage Node
+    ansible.builtin.include_role:
+      name: store
+    when: inventory_hostname in groups['store']
+    tags: store
+  
+  - name: Perform common tasks
+    ansible.builtin.include_role:
+      name: common
+    when: |
+      (inventory_hostname in groups['dbd']) or
+      (inventory_hostname in groups['head']) or
+      (inventory_hostname in groups['compute']) or
+      (inventory_hostname in groups['login'])
+    tags: common
+  
+  #- name: Deploy Build Node
+  #  ansible.builtin.include_role:
+  #    name: build
+  #  when: inventory_hostname in groups['build']
+    
+  - name: Deploy Slurm DBd Node
+    ansible.builtin.include_role:
+      name: dbd
+    when: inventory_hostname in groups['dbd']
+    tags: dbd
+    
+  - name: Deploy Head Node
+    ansible.builtin.include_role:
+      name: head
+    when: inventory_hostname in groups['head']
+    tags: head
+    
+  - name: Deploy Compute Node
+    ansible.builtin.include_role:
+      name: compute
+    when: inventory_hostname in groups['compute']
+    tags: compute
+    
+  - name: Deploy Login Node
+    ansible.builtin.include_role:
+      name: login
+    when: inventory_hostname in groups['login']
+    tags: login

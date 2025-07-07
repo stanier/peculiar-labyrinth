@@ -1,0 +1,16 @@
+Host *
+    ForwardAgent yes
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null 
+
+Host cluster_net
+    HostName 192.168.1.41
+    User rocky
+
+Host 10.42.*.*
+    ProxyJump rocky@cluster_net
+
+Host cluster_login
+    HostName 10.42.0.1
+    User rocky
+    ProxyJump rocky@cluster_net

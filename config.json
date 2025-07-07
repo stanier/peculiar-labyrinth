@@ -1,0 +1,71 @@
+{
+    "clustername": "lilsebastian",
+    "vmconf": {
+        "net": {
+            "hostname": "net",
+            "count": 1,
+            "cores": 2,
+            "mem": 2048,
+            "net": {
+                "range": "10.42.254.0/24"
+            }
+        },
+        "store": {
+            "hostname": "store",
+            "count": 0,
+            "cores": 2,
+            "mem": 2048,
+            "net": {
+                "range": "10.42.253.0/24"
+            }
+        },
+        "build": {
+            "hostname": "build",
+            "count": 0,
+            "cores": 2,
+            "mem": 2048,
+            "net": {
+                "range": "10.42.252.0/24"
+            }
+        },
+        "head": {
+            "hostname": "head",
+            "count": 1,
+            "cores": 2,
+            "mem": 2048,
+            "net": {
+                "range": "10.42.250.0/24"
+            }
+        },
+        "dbd": {
+            "hostname": "dbd",
+            "count": 1,
+            "cores": 2,
+            "mem": 2048,
+            "net": {
+                "range": "10.42.251.0/24"
+            }
+        },
+        "compute": {
+            "hostname": "compute",
+            "count": 1,
+            "cores": 2,
+            "mem": 2048,
+            "net": {
+                "range": "10.42.1.0/24"
+            }
+        },
+        "login": {
+            "hostname": "login",
+            "count": 1,
+            "cores": 2,
+            "mem": 2048,
+            "net": {
+                "range": "10.42.0.0/24"
+            }
+        }
+    },
+    "net": {
+        "prefix": "10.42.0.0./16"
+    }
+}

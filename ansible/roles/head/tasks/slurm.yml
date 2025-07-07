@@ -1,0 +1,17 @@
+- name: Install slurm head packages
+  ansible.builtin.package:
+    name:
+      - slurm
+      - slurm-perlapi
+      - slurm-slurmctld
+    state: present
+  become: true
+  tags: head
+
+- name: Enable slurmd
+  ansible.builtin.systemd_service:
+    name: slurmctld
+    enabled: true
+    state: started
+  become: true
+  tags: head

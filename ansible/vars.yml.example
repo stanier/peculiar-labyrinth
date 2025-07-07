@@ -1,0 +1,7 @@
+---
+
+cluster_name: "lilsebastian"
+proxmox_user: "root@pam"
+proxmox_host: "192.168.1.42:8006"
+proxmox_token_id: "lilsebastian"
+proxmox_token_secret: "deadbeef-cafeface"

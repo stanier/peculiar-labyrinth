@@ -1,0 +1,10 @@
+- name: Install prerequisites
+  ansible.builtin.package:
+    name:
+      - '@Development tools'
+    enablerepo: devel
+  become: true
+- name: Build Slurm
+  import_tasks: slurm.yml
+- name: Publish RPMs to /pkgs
+  ansible.builtin.shell: 'cp /home/rocky/rpmbuild/RPMS/x86_64/* /pkgs/'

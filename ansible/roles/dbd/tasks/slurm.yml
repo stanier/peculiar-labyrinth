@@ -1,0 +1,16 @@
+- name: Install slurm DBd packages
+  ansible.builtin.package:
+    name:
+      - slurm
+      - slurm-slurmdbd
+    state: present
+  become: true
+  tags: dbd
+
+- name: Enable slurmd
+  ansible.builtin.systemd_service:
+    name: slurmdbd
+    enabled: true
+    state: started
+  become: true
+  tags: dbd

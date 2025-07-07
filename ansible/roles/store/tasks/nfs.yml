@@ -1,0 +1,47 @@
+- name: Install nfs-utils
+  ansible.builtin.package:
+    name: nfs-utils
+    state: present
+  become: true
+
+- name: Create mount directories
+  ansible.builtin.file:
+    path: /opt/{{item}}
+    state: directory
+    mode: '0777'
+  with_items:
+    - "pkgs"
+    - "apps"
+    - "misc"
+  become: true
+
+- name: Configure mount exports
+  ansible.builtin.blockinfile:
+    path: /etc/exports
+    marker: "# {mark} ANSIBLE MANAGED BLOCK /{{item}}"
+    state: present
+    block: "/opt/{{item}} 10.42.0.0/16(rw,sync,no_subtree_check)"
+  with_items:
+    - "pkgs"
+    - "apps"
+    - "misc"
+  become: true
+
+#- name: Export /home
+#  ansible.builtin.blockinfile:
+#    path: /etc/exports
+#    marker: "# {mark} ANSIBLE MANAGED BLOCK /home"
+#    state: present
+#    block: "/home 10.42.0.0/16(rw,sync,no_root_squash,no_subtree_check)"
+#  become: true
+
+- name: Commit exports to kernel
+  ansible.builtin.command: exportfs -a
+  become: true
+
+- name: Enable NFS server
+  ansible.builtin.systemd_service:
+    state: started
+    enabled: true
+    name: nfs-server
+  become: true

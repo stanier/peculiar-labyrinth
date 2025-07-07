@@ -1,0 +1,3 @@
+- name: Install Slurm
+  import_tasks: slurm.yml
+  tags: dbd

@@ -1,0 +1,41 @@
+variable "ssh_pubkeys" {
+    default = <<-EOF
+put your ssh public key here
+EOF
+}
+
+variable "cluster_name" {
+    default = "lilsebastian" # change to whatever you'd like
+}
+
+variable "cluster_ip" {
+    default = "192.168.1.142/24" # change this to any static IP on your network you'd like the cluster traffic to NAT to
+}
+
+variable "cluster_gw" {
+    default = "192.168.1.1"
+}
+
+variable "osimg_download_url" {
+    default = "https://dl.rockylinux.org/pub/rocky/9/images/x86_64/Rocky-9-GenericCloud-Base.latest.x86_64.qcow2"
+}
+
+variable proxmox_api_host {
+    default = "https://{ip address of host machine goes here}:8006/api2/json"
+}
+
+variable proxmox_token_id {
+    default = "root@pam!lilsebastian" # proxmox API token id goes here
+}
+
+variable proxmox_token_secret {
+    default = "deadbeef-cafeface" # proxmox API token secret goes here
+}
+
+variable proxmox_storage_pool {
+    default = "data" # name of the storage pool proxmox will use to store VM disks
+}
+
+variable proxmox_target_host {
+    default = "homelab" # hostname of your host machine
+}

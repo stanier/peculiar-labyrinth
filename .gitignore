@@ -1,0 +1,12 @@
+venv
+
+.terraform
+*.hcl
+*.tfstate*
+vars.tf
+
+vars.yml
+log
+log/
+priv/
+ansible/inventories/*.yml

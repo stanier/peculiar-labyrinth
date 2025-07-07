@@ -1,0 +1,6 @@
+- name: Install apptainer package
+  ansible.builtin.package:
+    name:
+      - apptainer
+    state: present
+  become: true

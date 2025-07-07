@@ -1,0 +1,18 @@
+- name: Install slurm login packages
+  ansible.builtin.package:
+    name:
+      - slurm
+      - slurm-perlapi
+    state: present
+  become: true
+  tags: login
+
+#- name: Install slurm
+#  ansible.builtin.dnf:
+#    name: '/pkgs/slurm.rocky9.rpm'
+#    state: present
+#
+#- name: Install slurm-perlapi
+#  ansible.builtin.dnf:
+#    name: '/pkgs/slurm-perlapi.rocky9.rpm'
+#    state: present

@@ -1,0 +1,12 @@
+- name: Install prerequisites
+  ansible.builtin.package:
+    name:
+      - bzip2-devel
+    enablerepo: devel
+  become: true
+- name: Download Munge tarball
+  ansible.builtin.get_url:
+    url: https://github.com/dun/munge/releases/download/munge-0.5.16/munge-0.5.16.tar.xz
+    dest: /tmp/munge-0.5.16.tar.xz
+- name: Build Munge
+  ansible.builtin.shell: rpmbuild -tb /tmp/munge-0.5.16.tar.xz

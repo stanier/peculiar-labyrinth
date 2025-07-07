@@ -1,0 +1,6 @@
+- name: Install Slurm
+  import_tasks: slurm.yml
+  tags: compute
+- name: Install Apptainer
+  import_tasks: apptainer.yml
+  tags: compute
